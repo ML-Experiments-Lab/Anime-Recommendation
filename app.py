@@ -45,7 +45,7 @@ def search():
         except Exception as e:
             return jsonify({'error': f"An error occurred: {str(e)}"}), 500
 
-    return render_template('search.html')
+    return render_template('Search.html')
 
 @app.route('/Genre.html')
 def genre():
