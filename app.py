@@ -8,8 +8,8 @@ import kagglehub
 
 app = Flask(__name__)
 
-# Load data and models when the app starts (not inside the route)
-new_anime, nn_model, TfidfVectorizer, tfidf_matrix = load_models()
+# Load data and models 
+new_anime, nn_model, tfidf, tfidf_matrix = load_models()
 
 @app.route('/')
 def home():
