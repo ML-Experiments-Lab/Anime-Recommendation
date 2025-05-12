@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>About OtakuNest</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111;
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            width: 300px;
+            height: 200px;
+        }
+
+        #menu-btn {
+            font-size: 70px;
+            background: none;
+            border: none;
+            color: #c90000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background: #222;
+            border: 1px solid #444;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            border-bottom: 1px solid #333;
+            font-size: 40px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #c90000;
+            padding: 10px 20px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #444;
+        }
+
+        main {
+            padding: 50px 30px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        section {
+            background: #111;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 15px rgba(201, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 25px rgba(201, 0, 0, 0.5);
+        }
+
+        h1, h2 {
+            color: #ff2a2a;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.6);
+            margin-bottom: 20px;
+        }
+
+        p, li {
+            font-size: 28px;
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+
+        ul {
+            padding-left: 30px;
+        }
+
+        .emoji-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li::before {
+            margin-right: 10px;
+            color: #c90000;
+        }
+
+        strong {
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 0 0 5px #c90000;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            background-color: #111;
+            padding: 10px 20px;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #c90000;
+            text-decoration: none;
+            font-size: 36px;
+        }
+
+        footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="OtakuNest Logo">
+    </div>
+    <button id="menu-btn">☰</button>
+    <nav id="menu">
+        <ul id="menu-options">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('genre') }}" id="genre-link">Genre</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h1 style="font-size: 36px;">Welcome to OtakuNest</h1>
+        <p>Welcome to <strong>OtakuNest</strong> — your cozy anime companion! We're here to help anime lovers discover their next favorite series with smart recommendations and a sleek interface.</p>
+    </section>
+
+    <section>
+        <h2 style="font-size: 36px;">Our Mission</h2>
+        <p>Our mission is to create a one-stop anime hub that combines passion, technology, and community to make anime discovery simple, fun, and personal.</p>
+    </section>
+
+    <section>
+        <h2 style="font-size: 36px;">What We Offer</h2>
+        <ul class="emoji-list">
+            <li>🎯 Intelligent anime search</li>
+            <li>🎭 Genre-based browsing</li>
+            <li>💖 Personalized suggestions (coming soon!)</li>
+            <li>🌌 Sleek UI designed for otakus, by otakus</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 style="font-size: 36px;">Technology Stack</h2>
+        <ul class="emoji-list">
+            <li>🛠️ HTML, CSS, JavaScript</li>
+            <li>💻 PHP and MySQL (coming soon)</li>
+            <li>📊 Anime dataset from Kaggle</li>
+            <li>🧠 AI-powered recommendation (custom model)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 style="font-size: 36px;">Why We Created OtakuNest</h2>
+        <p>We know how hard it is to find that perfect anime. With OtakuNest, we wanted to build something that helps every anime fan — from beginners to seasoned otakus — find something new to binge.</p>
+    </section>
+</main>
+
+<footer>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('feedback') }}">Do you have any query?</a>
+</footer>
+
+<!-- Reusable menu logic -->
+<script src="{{ url_for('static', filename='menu.js') }}"></script>
+
+</body>
+</html>

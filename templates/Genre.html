@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OtakuNest - Genre</title>
+    <style>
+        body {
+            background-color: black;
+            color: #c90000;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111;
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            width: 300px;
+            height: 200px;
+            margin-right: 10px;
+        }
+
+        #menu-btn {
+            font-size: 70px;
+            background: none;
+            border: none;
+            color: #c90000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background: #222;
+            border: 1px solid #444;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            border-bottom: 1px solid #333;
+            font-size: 40px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #c90000;
+            padding: 10px 20px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #444;
+        }
+
+        h2#genre-title {
+            font-size: 56px; 
+            color: #c90000;
+            margin-top: 30px;
+        }
+
+        .anime-results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px auto;
+            width: 90%;
+        }
+
+        .anime-card {
+            width: 350px; 
+            margin: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 700px; 
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .anime-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .anime-card p {
+            font-size: 30px; 
+            margin: 8px 0 0 0;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            background-color: #111;
+            padding: 10px 20px;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #c90000;
+            text-decoration: none;
+            font-size: 36px;
+        }
+
+        footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="O Logo">
+    </div>
+    <button id="menu-btn">☰</button>
+    <nav id="menu">
+        <ul id="menu-options">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('genre') }}" id="genre-link">Genre</a></li>
+        </ul>
+    </nav>
+</header>
+
+<h2 id="genre-title">Anime by Genre</h2>
+<div class="anime-results" id="genre-results"></div>
+
+<footer>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('feedback') }}">Do you have any query?</a>
+</footer>
+
+<script src="{{ url_for('static', filename='menu.js') }}"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const selectedGenre = params.get("genre")?.toLowerCase();
+    console.log("Selected Genre:", selectedGenre);
+    
+    // Update the title
+    document.getElementById("genre-title").textContent = `Anime by Genre: ${selectedGenre}`;
+    
+    const resultsContainer = document.getElementById("genre-results");
+    
+    // Fetch anime data
+    fetch('anime_data.json')
+        .then(response => response.json())
+        .then(data => {
+            // Function to load anime based on category 
+            function loadAnimeByGenre(category, limit = 50, sortBy = 'rating') {
+                let filteredAnimes = data.filter(anime => anime['English Name'] !== 'Unknown')
+                                         .filter(anime => anime.Genres.some(g => g.toLowerCase().includes(category.toLowerCase())))
+                                         .sort((a, b) => {
+                                            if (sortBy === 'rating') {
+                                                return b.Rating - a.Rating; // Sort by rating
+                                            } else if (sortBy === 'duration') {
+                                                return b.Duration - a.Duration; // Sort by duration
+                                            }
+                                            return b.Rating - a.Rating; // Default sort by rating
+                                        })
+                                        .slice(0, limit);
+    
+                filteredAnimes.forEach(anime => {
+                    let card = document.createElement("div");
+                    card.className = "anime-card";
+    
+                    let link = document.createElement("a");
+                    link.href = "anime.html?anime_name=" + encodeURIComponent(anime['English Name']); // Pass anime name!
+    
+                    let img = document.createElement("img");
+                    img.src = anime['Image source'];
+                    img.alt = anime['English Name'];
+    
+                    link.appendChild(img);
+                    card.appendChild(link);
+    
+                    let name = document.createElement("p");
+                    name.textContent = anime['English Name'];
+    
+                    card.appendChild(name);
+                    resultsContainer.appendChild(card);
+                });
+            }
+    
+            // Call the function to load anime based on selected genre, sorted by rating
+            loadAnimeByGenre(selectedGenre, 50, 'rating');
+        })
+      .catch(error => console.error('Error loading anime data:', error));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OtakuNest - Search Anime</title>
+    <style>
+        html, body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+    
+        main {
+            flex: 1;
+        }
+    
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+            text-align: center;
+        }
+    
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111;
+            padding: 10px 20px;
+        }
+    
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+    
+        .logo img {
+            width: 300px;
+            height: 200px;
+            margin-right: 10px;
+        }
+    
+        #menu-btn {
+            font-size: 70px;
+            background: none;
+            border: none;
+            color: #c90000;
+            cursor: pointer;
+        }
+    
+        nav {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background: #222;
+            border: 1px solid #444;
+        }
+    
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+    
+        nav ul li {
+            border-bottom: 1px solid #333;
+            font-size: 40px;
+        }
+    
+        nav ul li a {
+            text-decoration: none;
+            color: #c90000;
+            padding: 10px 20px;
+            display: block;
+        }
+    
+        nav ul li a:hover {
+            background-color: #444;
+        }
+    
+        .search-container {
+            margin: 20px auto;
+            width: 50%;
+            position: relative;
+        }
+    
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 26px;
+            border: 4px solid #c90000;
+            border-radius: 22px;
+            outline: none;
+            background-color: #111;  /* Matching search bar with background */
+            color: white;
+        }
+    
+        .autocomplete-items {
+            position: absolute;
+            border-top: none;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 99;
+            background-color: #222; /* Dark background to match the page */
+            width: 100%;
+            border: 1px solid #c90000; /* Border color to make it visible */
+            border-radius: 5px; /* Rounded corners */
+            padding: 0; /* No extra padding */
+            display: none; /* Hide by default */
+            font-size: 24px;
+        }
+    
+        .autocomplete-items div {
+            padding: 12px;
+            cursor: pointer;
+            color: white; /* Better contrast */
+        }
+    
+        .autocomplete-items div:hover {
+            background-color: #444; /* Light grey on hover for better interaction */
+        }
+    
+        .anime-results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px auto;
+            width: 90%;
+        }
+    
+        .anime-card {
+            width: 350px;
+            margin: 15px;
+            cursor: pointer;
+        }
+    
+        .anime-card img {
+            width: 100%;
+            height: 700px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+    
+        .anime-card img:hover {
+            transform: scale(1.05);
+        }
+    
+        .anime-card p {
+            font-size: 30px;
+            margin: 8px 0 0 0;
+            color: #c90000;
+        }
+    
+        .anime-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+    
+        footer {
+            display: flex;
+            justify-content: space-between;
+            background-color: #111;
+            padding: 10px 20px;
+            margin-top: 50px;
+        }
+    
+        footer a {
+            color: #c90000;
+            text-decoration: none;
+            font-size: 36px;
+        }
+    
+        footer a:hover {
+            color: white;
+        }
+    </style>    
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="O Logo">
+    </div>
+    <button id="menu-btn">☰</button>
+    <nav id="menu">
+        <ul id="menu-options">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('genre') }}" id="genre-link">Genre</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="search-container">
+        <input type="text" id="search-input" placeholder="Search for an anime..." autocomplete="off" required oninput="showSuggestions()">
+        <div id="autocomplete-list" class="autocomplete-items"></div>
+        <br><br>
+        <button onclick="searchAnime()" style="padding: 10px 30px; font-size: 24px; background-color: #c90000; color: white; border: none; border-radius: 10px;">Search</button>
+        <p id="error-message" style="color: red; font-size: 24px;"></p>
+    </section>
+
+    <section class="anime-results" id="anime-results">
+        <!-- Anime results will be injected here -->
+    </section>
+</main>
+
+<footer>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('feedback') }}">Do you have any query?</a>
+</footer>
+
+<script src="{{ url_for('static', filename='menu.js') }}"></script>
+
+<script>
+    function searchAnime() {
+        const input = document.getElementById('search-input').value;
+        const resultsDiv = document.getElementById('anime-results');
+        const errorDiv = document.getElementById('error-message');
+        resultsDiv.innerHTML = '';
+        errorDiv.textContent = '';
+
+        if (!input.trim()) {
+            errorDiv.textContent = "Please enter an anime name.";
+            return;
+        }
+
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',   // Tells the server that the data being sent is in JSON format.
+            },
+            body: JSON.stringify({ anime_name: input })  // Sends the input text as a JSON object with the key anime_name
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);  // Debug log
+            if (data.error) {
+                errorDiv.textContent = data.error;
+            } else {
+                console.log(data.recommendations);
+                data.recommendations.forEach(anime => {
+                    console.log(anime);
+                    const card = document.createElement('div');
+                    card.className = 'anime-card';
+                    card.innerHTML = `
+                        <a href="anime.html?anime_name=${encodeURIComponent(anime['English Name'])}">
+                            <img src="${anime['Image source']}" alt="${anime['English Name']}">
+                            <p><strong>${anime['English Name']}</strong></p>
+                        </a>
+                    `;
+                    resultsDiv.appendChild(card);
+                });
+            }
+        })
+        .catch(error => {
+            errorDiv.textContent = `Error: ${error.message}`;
+        });
+    }
+</script>
+
+<script>
+    let animeData = [];
+
+    // Load JSON file
+    fetch('/anime_data.json')
+        .then(res => res.json())
+        .then(data => {
+            animeData = data.filter(anime => anime['English Name'] && anime['English Name'].toLowerCase() !== 'unknown');
+            console.log(animeData);
+        });
+
+        function showSuggestions() {
+            const input = document.getElementById('search-input');
+            const list = document.getElementById('autocomplete-list');
+            const query = input.value.toLowerCase();
+            list.innerHTML = '';  // Clear previous suggestions
+
+            if (!query) {
+                list.style.display = 'none';  // Hide suggestions if no input
+                return;
+            }
+
+            const matches = animeData
+                .filter(anime => anime['English Name'].toLowerCase().startsWith(query))
+                .slice(0, 5);  // Limit to 5 suggestions
+
+            if (matches.length > 0) {
+                list.style.display = 'block';  // Show suggestions if matches found
+            } else {
+                list.style.display = 'none';  // Hide if no matches
+            }
+
+            matches.forEach(anime => {
+                const item = document.createElement('div');
+                item.textContent = anime['English Name'];
+                item.onclick = () => {
+                    input.value = anime['English Name'];
+                    list.innerHTML = '';  // Clear suggestions when clicked
+                    list.style.display = 'none';  // Hide suggestions
+                };
+                list.appendChild(item);
+            });
+        }
+
+    // Close suggestions if user clicks elsewhere
+    document.addEventListener('click', function (e) {
+        const list = document.getElementById('autocomplete-list');
+        if (e.target.id !== 'search-input' && e.target !== list) {
+            list.innerHTML = '';
+        }
+    });
+</script>
+
+</body>
+</html>

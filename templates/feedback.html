@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback - OtakuNest</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 300px;
+            height: 200px;
+            margin-right: 10px;
+        }
+
+        #menu-btn {
+            font-size: 70px;
+            background: none;
+            border: none;
+            color: #c90000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: #222;
+            border: 1px solid #444;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            border-bottom: 1px solid #333;
+            font-size: 40px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #c90000;
+            padding: 10px 20px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #444;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #c90000;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 26px;
+        }
+
+        input, textarea {
+            background-color: #111;
+            border: 1px solid #c90000;
+            color: white;
+            padding: 10px;
+            font-size: 26px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #888;
+        }
+
+        button {
+            background-color: #c90000;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 26px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff2e2e;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            background-color: #111;
+            padding: 10px 20px;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #c90000;
+            text-decoration: none;
+            font-size: 36px;
+        }
+
+        footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='LOGO.png') }}" alt="OtakuNest Logo">
+    </div>
+    <button id="menu-btn">☰</button>
+    <nav id="menu">
+        <ul id="menu-options">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+            <li><a href="{{ url_for('genre') }}" id="genre-link">Genre</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h1>We'd Love Your Feedback</h1>
+    <form id="feedback-form" method="post">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+        <label for="message">Your Query / Message</label>
+        <textarea id="message" name="message" rows="6" placeholder="Write your message here..." required></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="thank-you-message" style="display:none; color: #c90000; margin-top: 40px; font-size: 26px; text-align: center;">
+        Thank you for your feedback!
+    </div>
+</main>
+
+<footer>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('feedback') }}">Do you have any query?</a>
+</footer>
+
+<script src="{{ url_for('static', filename='menu.js') }}"></script>
+
+<script>
+    // Handle form submission via AJAX
+    document.getElementById('feedback-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this);
+
+        // Send the form data to feedback.php using AJAX
+        fetch('feedback.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Show the thank you message
+            document.getElementById('thank-you-message').style.display = 'block';
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>
