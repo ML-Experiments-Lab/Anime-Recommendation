@@ -73,25 +73,28 @@ def load_models():
 
 def get_recommendations(anime_title, top_n=20):
     anime_title = anime_title.strip().lower()
+    print(f"Searching recommendations for: {anime_title}")
+
     best_match = process.extractOne(anime_title, new_anime['English Name'])
+    print(f"Best match: {best_match}")
 
     if best_match is None or best_match[1] < 80:
+        print("No good match found")
         return []
 
     anime_index = new_anime[new_anime['English Name'] == best_match[0]].index[0]
+    print(f"Anime index: {anime_index}")
+
     distances, indices = nn_model.kneighbors(tfidf_matrix[anime_index], n_neighbors=top_n+1)
 
     recommendations = []
     for idx in indices[0]:
         anime_row = new_anime.iloc[idx]
-        if anime_row['English Name'] != 'Unknown' and anime_row['English Name'].strip().lower() != best_match[0].strip().lower():
+        if anime_row['English Name'] != 'Unknown':
             recommendations.append({
-                'name': anime_row['English Name'],
-                'image': anime_row['Image source'],
-                'rating': round(float(anime_row['Rating']), 2),
-                'duration': int(anime_row['Duration'] * scaler.data_range_[1] + scaler.data_min_[1]),  # Denormalize duration
-                'theme': anime_row['Theme'],
-                'genres': anime_row['Genres']
+                'English Name': anime_row['English Name'],
+                'Image source': anime_row['Image source']
             })
 
-    return recommendations[:top_n]
+    print(f"Final recommendations: {recommendations}")
+    return recommendations
