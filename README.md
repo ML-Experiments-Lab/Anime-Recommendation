@@ -54,7 +54,7 @@
 
 ## 🌐 Live Website
 
-Check out **OtakuNest** live here: [🔗 Visit OtakuNest on Render](https://anime-recommendation-blzq.onrender.com)
+Check out **OtakuNest** live here: [🔗 Visit OtakuNest](https://anime-recommendation-blzq.onrender.com)
 > _Explore, discover, and dive into your next favorite anime!_
 
 ---
