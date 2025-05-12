@@ -37,14 +37,6 @@ from IPython.display import Image, display
 
 anime = pd.read_csv("static/anime_dataset.csv")
 
-anime.head()
-
-anime.info()
-
-anime.shape
-
-anime.isnull().sum()
-
 anime['English Name'] = anime['English Name'].fillna('Unknown')
 
 anime['Producers'] = anime['Producers'].fillna('Unknown')
@@ -62,8 +54,6 @@ anime['Synopsis'] = anime['Synopsis'].fillna('Synopsis is not available')
 anime['Image source'] = anime['Image source'].fillna('Image preview not available')
 
 new_anime = anime[['Name', 'Synopsis', 'Genres', 'English Name', 'Image source', 'Rating', 'Duration', 'Theme', 'Producers']]
-
-new_anime.duplicated().sum()
 
 ps = PorterStemmer()
 
@@ -148,12 +138,6 @@ def recommend(movie_name, top_n=20):
         image_url = recommended_anime['Image source']
         if image_url != 'Image preview not available' and image_url.startswith('http'):
             display(Image(url=image_url))
-        print(f"English Name: {recommended_anime['English Name']}")
-        print(f"Synopsis: {recommended_anime['Synopsis']}")
-        print(f"Genres: {recommended_anime['Genres']}")
-        print(f"Rating: {recommended_anime['Rating']}")
-        print(f"Duration: {recommended_anime['Duration']} min")
-        print("-" * 50)
 
         recommendations += 1
         i += 1  # Move to the next neighbor
