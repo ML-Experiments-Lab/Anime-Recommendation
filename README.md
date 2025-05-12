@@ -52,6 +52,13 @@
 
 ---
 
+## 🌐 Live Website
+
+Check out **OtakuNest** live here: [🔗 Visit OtakuNest on Render](https://anime-recommendation-blzq.onrender.com)
+> _Explore, discover, and dive into your next favorite anime!_
+
+---
+
 ## ✨ Future Scope
 
 - Add user login/authentication
