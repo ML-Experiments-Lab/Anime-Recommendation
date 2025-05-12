@@ -69,7 +69,7 @@ nn_model = NearestNeighbors(metric='cosine', algorithm='brute')
 nn_model.fit(tfidf_matrix)
 
 def load_models():
-    return new_anime, nn_model, TfidfVectorizer, tfidf_matrix
+    return new_anime, nn_model, tfidf, tfidf_matrix
 
 def get_recommendations(anime_title, top_n=20):
     anime_title = anime_title.strip().lower()
